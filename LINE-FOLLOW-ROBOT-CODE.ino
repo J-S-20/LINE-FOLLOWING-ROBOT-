@@ -1,104 +1,57 @@
-// Pin definitions
-#define IR_LEFTMOST A0
-#define IR_LEFT A1
-#define IR_RIGHT A2
-#define IR_RIGHTMOST A3
-
-#define MOTOR_LEFT_1 5
-#define MOTOR_LEFT_2 6
-#define MOTOR_RIGHT_1 9
-#define MOTOR_RIGHT_2 10
+const int leftSensor = A0; // Left sensor pin
+const int rightSensor = A1; // Right sensor pin
+const int leftMotor = 2; // Left motor pin
+const int rightMotor = 3; // Right motor pin
 
 void setup() {
-    pinMode(IR_LEFTMOST, INPUT);
-    pinMode(IR_LEFT, INPUT);
-    pinMode(IR_RIGHT, INPUT);
-    pinMode(IR_RIGHTMOST, INPUT);
-
-    pinMode(MOTOR_LEFT_1, OUTPUT);
-    pinMode(MOTOR_LEFT_2, OUTPUT);
-    pinMode(MOTOR_RIGHT_1, OUTPUT);
-    pinMode(MOTOR_RIGHT_2, OUTPUT);
-
-    Serial.begin(9600); // For debugging
+pinMode(leftSensor, INPUT);
+pinMode(rightSensor, INPUT);
+pinMode(leftMotor, OUTPUT);
+pinMode(rightMotor, OUTPUT);
 }
 
 void loop() {
-    // Read sensor values
-    int leftmost = digitalRead(IR_LEFTMOST);
-    int left = digitalRead(IR_LEFT);
-    int right = digitalRead(IR_RIGHT);
-    int rightmost = digitalRead(IR_RIGHTMOST);
-
-    // Print sensor values (for debugging)
-    Serial.print("Sensors: ");
-    Serial.print(leftmost);
-    Serial.print(left);
-    Serial.print(right);
-    Serial.println(rightmost);
-
-    // Robot movement logic
-    if (left == LOW && right == LOW) {
-        moveForward(); // Move straight
-    } 
-    else if (left == LOW) {
-        turnLeft(); // Slight left
-    } 
-    else if (right == LOW) {
-        turnRight(); // Slight right
-    } 
-    else if (leftmost == LOW) {
-        sharpLeft(); // Hard left
-    } 
-    else if (rightmost == LOW) {
-        sharpRight(); // Hard right
-    } 
-    else {
-        stopMotors(); // Stop if no line detected
-    }
-
-    delay(100); // Small delay for stability
+int leftValue = analogRead(leftSensor);
+int rightValue = analogRead(rightSensor);
+  
+if (leftValue < 500 && rightValue < 500) {
+// Both sensors detect line forward();
+} else if (leftValue < 500) { // Left sensor
+  
+  if (leftValue < 500 && rightValue < 500) {
+// Both sensors detect line forward();
+} else if (leftValue < 500) { // Left sensor detects line turnLeft();
+} else if (rightValue < 500) { // Right sensor detects line turnRight();
+} else { // No line detected
+stop();
 }
-
-// Motor Control Functions
-void moveForward() {
-    digitalWrite(MOTOR_LEFT_1, HIGH);
-    digitalWrite(MOTOR_LEFT_2, LOW);
-    digitalWrite(MOTOR_RIGHT_1, HIGH);
-    digitalWrite(MOTOR_RIGHT_2, LOW);
 }
-
+  
+void forward() {
+digitalWrite(leftMotor, HIGH);
+digitalWrite(rightMotor, HIGH);
+}
+  
 void turnLeft() {
-    digitalWrite(MOTOR_LEFT_1, LOW);
-    digitalWrite(MOTOR_LEFT_2, LOW);
-    digitalWrite(MOTOR_RIGHT_1, HIGH);
-    digitalWrite(MOTOR_RIGHT_2, LOW);
+digitalWrite(leftMotor, LOW);
+digitalWrite(rightMotor, HIGH);
 }
-
 void turnRight() {
-    digitalWrite(MOTOR_LEFT_1, HIGH);
-    digitalWrite(MOTOR_LEFT_2, LOW);
-    digitalWrite(MOTOR_RIGHT_1, LOW);
-    digitalWrite(MOTOR_RIGHT_2, LOW);
+  digitalWrite(leftMotor, HIGH);
+digitalWrite(rightMotor, HIGH);
 }
-
-void sharpLeft() {
-    digitalWrite(MOTOR_LEFT_1, LOW);
-    digitalWrite(MOTOR_LEFT_2, HIGH);
-    digitalWrite(MOTOR_RIGHT_1, HIGH);
-    digitalWrite(MOTOR_RIGHT_2, LOW);
+  
+void turnLeft() {
+digitalWrite(leftMotor, LOW);
+digitalWrite(rightMotor, HIGH);
 }
-
-void sharpRight() {
-    digitalWrite(MOTOR_LEFT_1, HIGH);
-    digitalWrite(MOTOR_LEFT_2, LOW);
-    digitalWrite(MOTOR_RIGHT_1, LOW);
-    digitalWrite(MOTOR_RIGHT_2, HIGH);
+  
+void turnRight() {
+digitalWrite(leftMotor, HIGH);
+digitalWrite(rightMotor, LOW);
 }
-
-void stopMotors() {
-    digitalWrite(MOTOR_LEFT_1, LOW);
-    digitalWrite(MOTOR_LEFT_2, LOW);
-    digitalWrite(MOTOR_RIGHT_1, LOW);
-    digitalWrite(MOTOR_RIGHT_2, LOW);
+  
+void stop() {
+digitalWrite(leftMotor, LOW);
+digitalWrite(rightMotor, LOW);
 }
